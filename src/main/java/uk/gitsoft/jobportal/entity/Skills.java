@@ -5,12 +5,18 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "skills")
 public class Skills {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "experience_level")
     private String experienceLevel;
+    @Column(name = "years_of_experience")
     private String yearsOfExperience;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true )
-    @JoinColumn(name = "job_seeker_profile_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "job_seeker_profile")
     private JobSeekerProfile jobSeekerProfile;
 
     public Skills() {

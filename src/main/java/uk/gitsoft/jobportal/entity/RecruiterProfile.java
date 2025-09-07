@@ -9,16 +9,18 @@ public class RecruiterProfile {
     @Id
     private int userAccountId;
     @OneToOne
-    @JoinColumn(name = "user_accouunt_id")
+    @JoinColumn(name = "user_account_id")
     @MapsId
     private Users userId;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
     private String city;
     private String state;
     private String country;
     private String company;
-    @Column(nullable = true, length = 64)
+    @Column(name = "profile_photo", nullable = true, length = 64)
     private String profilePhoto;
 
     public RecruiterProfile() {
@@ -33,6 +35,10 @@ public class RecruiterProfile {
         this.country = country;
         this.company = company;
         this.profilePhoto = profilePhoto;
+    }
+
+    public RecruiterProfile(Users users) {
+        this.userId = users;
     }
 
     public int getUserAccountId() {

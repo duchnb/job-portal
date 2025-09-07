@@ -11,16 +11,22 @@ public class JobSeekerProfile {
     @Id
     private int userAccountId;
     @OneToOne
-    @JoinColumn(name = "user_accouunt_id")
+    @JoinColumn(name = "user_account_id")
     @MapsId
     private Users userId;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
     private String city;
-    private String workAuthorizations;
+    private String state;
+    private String country;
+    @Column(name = "work_authorization")
+    private String workAuthorization;
+    @Column(name = "employment_type")
     private String employmentType;
     private String resume;
-    @Column(nullable = true, length = 64)
+    @Column(name ="profile_photo",nullable = true, length = 64)
     private String profilePhoto;
     @OneToMany(targetEntity = Skills.class, mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
     private List<Skills> skills;
@@ -32,15 +38,18 @@ public class JobSeekerProfile {
         this.userId = userId;
     }
 
-    public JobSeekerProfile(int userAccountId, String firstName, String lastName, String city, String workAuthorizations, String employmentType, String resume, String profilePhoto) {
+    public JobSeekerProfile(int userAccountId, String firstName, String lastName, String city, String state, String country, String workAuthorization, String employmentType, String resume, String profilePhoto, List<Skills> skills) {
         this.userAccountId = userAccountId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.city = city;
-        this.workAuthorizations = workAuthorizations;
+        this.state = state;
+        this.country = country;
+        this.workAuthorization = workAuthorization;
         this.employmentType = employmentType;
         this.resume = resume;
         this.profilePhoto = profilePhoto;
+        this.skills = skills;
     }
 
     public int getUserAccountId() {
@@ -83,12 +92,28 @@ public class JobSeekerProfile {
         this.city = city;
     }
 
-    public String getWorkAuthorizations() {
-        return workAuthorizations;
+    public String getState() {
+        return state;
     }
 
-    public void setWorkAuthorizations(String workAuthorizations) {
-        this.workAuthorizations = workAuthorizations;
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getWorkAuthorization() {
+        return workAuthorization;
+    }
+
+    public void setWorkAuthorization(String workAuthorization) {
+        this.workAuthorization = workAuthorization;
     }
 
     public String getEmploymentType() {
@@ -131,7 +156,9 @@ public class JobSeekerProfile {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", city='" + city + '\'' +
-                ", workAuthorizations='" + workAuthorizations + '\'' +
+                ", state='" + state + '\'' +
+                ", country='" + country + '\'' +
+                ", workAuthorization='" + workAuthorization + '\'' +
                 ", employmentType='" + employmentType + '\'' +
                 ", resume='" + resume + '\'' +
                 ", profilePhoto='" + profilePhoto + '\'' +
