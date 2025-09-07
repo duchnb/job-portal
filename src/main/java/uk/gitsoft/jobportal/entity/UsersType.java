@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "users-type")
+@Table(name = "users_type")
 public class UsersType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userTypeId")
+    @Column(name = "user_type_id")
     private int userTypeId;
-    @Column(name = "userTypeName")
+    @Column(name = "user_type_name")
     private String userTypeName;
 
     @OneToMany(mappedBy = "userType", cascade = CascadeType.ALL)

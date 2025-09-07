@@ -10,8 +10,8 @@ import java.util.Date;
 @Table(name = "users")
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int userId;
 
     @Column(name = "email", unique = true)
@@ -27,7 +27,7 @@ public class Users {
     @Column(name = "registration_date")
     private Date registrationDate;
     @ManyToOne
-    @JoinColumn(name = "user_type_id", referencedColumnName = "userTypeId")
+    @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
     private UsersType userType;
 
     public Users() {

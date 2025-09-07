@@ -15,6 +15,6 @@ public class UsersTypeService {
     }
 
     public List<UsersType> getAll() {
-        return usersTypeRepository.findAll();
+        return usersTypeRepository.findAllUserTypes();
     }
 }
