@@ -42,8 +42,8 @@ public class UsersController {
            if (optionalUser.isPresent()) {
                 model.addAttribute("error",
                         "Email already registered, try to login or register with other email.");
-                List<UsersType> userrTypes = usersTypeService.getAll();
-                model.addAttribute("getAllTypes", userrTypes);
+                List<UsersType> userTypes = usersTypeService.getAll();
+                model.addAttribute("getAllTypes", userTypes);
                 model.addAttribute("user", new Users());
                 return "register";
             }
