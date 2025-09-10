@@ -1,5 +1,10 @@
 package uk.gitsoft.jobportal.services;
 
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.gitsoft.jobportal.entity.JobSeekerProfile;
@@ -44,5 +49,22 @@ public class UsersService {
     }
     public Optional<Users> getUserByEmail(String email){
         return usersRepository.findByEmail(email);
+    }
+
+    public Object getCurrentUserrProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            String username = authentication.getName();
+          Users users = usersRepository.findByEmail(username).orElseThrow(()->new RuntimeException("User name not found"));
+          int userId = users.getUserId();
+          if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))){
+             RecruiterProfile recruiteProfile = recruiterProfileRepository.findById(userId).orElse(new RecruiterProfile());
+              return recruiteProfile;
+          }else {
+              JobSeekerProfile jobSeekerProfile = jobSeekerProfileRepository.findById(userId).orElse(new JobSeekerProfile());
+              return jobSeekerProfile;
+          }
+        }
+        return null;
     }
 }
