@@ -12,11 +12,9 @@ import uk.gitsoft.jobportal.util.CustomUserDetails;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UsersService usersService;
     private final UsersRepository usersRepository;
     @Autowired
-    public CustomUserDetailsService(UsersService usersService, UsersRepository usersRepository) {
-        this.usersService = usersService;
+    public CustomUserDetailsService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 

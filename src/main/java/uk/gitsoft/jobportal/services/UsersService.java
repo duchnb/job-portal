@@ -1,5 +1,6 @@
 package uk.gitsoft.jobportal.services;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.gitsoft.jobportal.entity.JobSeekerProfile;
 import uk.gitsoft.jobportal.entity.RecruiterProfile;
@@ -17,17 +18,21 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final JobSeekerProfileRepository jobSeekerProfileRepository;
     private final RecruiterProfileRepository recruiterProfileRepository;
+    private final PasswordEncoder passwordEncoder;
 
-            
-    public UsersService(UsersRepository usersRepository, JobSeekerProfileRepository jobSeekerProfileRepository, RecruiterProfileRepository recruiterProfileRepository) {
+
+    public UsersService(UsersRepository usersRepository, JobSeekerProfileRepository jobSeekerProfileRepository, RecruiterProfileRepository recruiterProfileRepository, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
         this.jobSeekerProfileRepository = jobSeekerProfileRepository;
         this.recruiterProfileRepository = recruiterProfileRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     public Users addNew(Users users){
         users.setActive(true);
         users.setRegistrationDate(new Date(System.currentTimeMillis()));
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
         Users savedUsers = usersRepository.save(users);
         int userTypeId = users.getUserType().getUserTypeId();
         if(userTypeId == 1){
