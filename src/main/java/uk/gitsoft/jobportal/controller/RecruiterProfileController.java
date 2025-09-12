@@ -79,4 +79,5 @@ public class RecruiterProfileController {
         }
         return "redirect:/dashboard";
     }
+
 }
