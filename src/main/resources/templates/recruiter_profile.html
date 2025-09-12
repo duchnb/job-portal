@@ -91,27 +91,10 @@
     </div>
 </div>
 </body>
-<script>
-    const fileInput = document.getElementById("profileImage");
-    const submitBtn = document.getElementById("submit2");
-    const fileError = document.getElementById("fileError");
-
-    fileInput.addEventListener("change", function () {
-        if (this.files.length > 0) {
-            const file = this.files[0];
-            if (file.size > 1048576) { // 1 MB in bytes
-                fileError.style.display = "block";
-                submitBtn.disabled = true;
-            } else {
-                fileError.style.display = "none";
-                submitBtn.disabled = false;
-            }
-        }
-    });
-</script>
 <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/main.js}"></script>
+<script type="text/javascript" th:src="@{/js/file-validation.js}"></script>
 
 </html>
