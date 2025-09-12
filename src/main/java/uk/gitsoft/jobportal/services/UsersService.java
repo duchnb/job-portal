@@ -51,7 +51,7 @@ public class UsersService {
         return usersRepository.findByEmail(email);
     }
 
-    public Object getCurrentUserrProfile() {
+    public Object getCurrentUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             String username = authentication.getName();
@@ -64,6 +64,15 @@ public class UsersService {
               JobSeekerProfile jobSeekerProfile = jobSeekerProfileRepository.findById(userId).orElse(new JobSeekerProfile());
               return jobSeekerProfile;
           }
+        }
+        return null;
+    }
+
+    public Users getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            String username = authentication.getName();
+            return usersRepository.findByEmail(username).orElseThrow(()->new RuntimeException("User name not found"));
         }
         return null;
     }
