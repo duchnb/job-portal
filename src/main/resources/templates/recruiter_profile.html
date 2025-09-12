@@ -65,12 +65,16 @@
                                         <input placeholder="Company" id="company" name="company" th:field="*{company}" type="text" class="form-control"  />
                                     </div>
                                 </div>
-                                <label class="heading_font font_sub_heading_color mt-2">Profile Photo</label>
+                                <label class="heading_font font_sub_heading_color mt-2">Profile Photo (max file size 1 MB)</label>
                                 <div class="row" >
 
                                     <div class="col" >
-                                        <input type="file" name="image" class="form-control" accept="image/png, image/jpeg" />
+                                        <input type="file"  id="profileImage" name="image" class="form-control" accept="image/png, image/jpeg" />
                                         <input type="text" name="profilePhoto" th:field="*{profilePhoto}" class="form-control" hidden />
+                                        <!-- Message for user -->
+                                        <small id="fileError" style="color:red; display:none;">
+                                            File size exceeds 1 MB. Please choose a smaller image.
+                                        </small>
                                     </div>
                                 </div>
                                 <div class="row mt-4" >
@@ -87,6 +91,24 @@
     </div>
 </div>
 </body>
+<script>
+    const fileInput = document.getElementById("profileImage");
+    const submitBtn = document.getElementById("submit2");
+    const fileError = document.getElementById("fileError");
+
+    fileInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+            const file = this.files[0];
+            if (file.size > 1048576) { // 1 MB in bytes
+                fileError.style.display = "block";
+                submitBtn.disabled = true;
+            } else {
+                fileError.style.display = "none";
+                submitBtn.disabled = false;
+            }
+        }
+    });
+</script>
 <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
