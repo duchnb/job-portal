@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,15 +32,23 @@ public class RecruiterProfileController {
         this.usersRepository = usersRepository;
         this.recruiterProfileService = recruiterProfileService;
     }
-
+    @GetMapping("/")
     public String recruiterProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUsername = authentication.getName();
             Users users = usersRepository.findByEmail(currentUsername)
                     .orElseThrow(() -> new UsernameNotFoundException("User name not found"));
-            Optional<RecruiterProfile> recruiterProfile = recruiterProfileService.getOne(users.getUserId());
-            recruiterProfile.ifPresent(profile -> model.addAttribute("recruiterProfile", profile));
+            Optional<RecruiterProfile> recruiterProfileOpt = recruiterProfileService.getOne(users.getUserId());
+            RecruiterProfile profile = recruiterProfileOpt.orElseGet(() -> {
+                RecruiterProfile rp = new RecruiterProfile();
+                rp.setUserId(users);
+                rp.setUserAccountId(users.getUserId());
+                return rp;
+            });
+            model.addAttribute("profile", profile);
+        } else {
+            model.addAttribute("profile", new RecruiterProfile());
         }
         return "recruiter_profile";
     }
