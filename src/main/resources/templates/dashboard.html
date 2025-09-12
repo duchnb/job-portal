@@ -76,7 +76,7 @@
                 height="50px"
                 width="50x"
                 th:if="${user.photosImagePath!=null}"
-                th:src="@{${user?.photosImagePath}}"
+                th:src="@{${user.photosImagePath}}"
         />
 
         <label th:if="${user != null && user.firstName != null && user.lastName != null}"
