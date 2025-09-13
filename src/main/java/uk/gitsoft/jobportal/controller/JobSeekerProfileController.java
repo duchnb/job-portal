@@ -45,7 +45,8 @@ public class JobSeekerProfileController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            Users user = usersRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            String currentUsername = authentication.getName();
+            Users user = usersRepository.findByEmail(currentUsername).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             jobSeekerProfile.setUserId(user);
             jobSeekerProfile.setUserAccountId(user.getUserId());
         }
@@ -59,7 +60,7 @@ public class JobSeekerProfileController {
         String imageName = "";
         String resumeName = "";
 
-        if (Objects.equals(image.getOriginalFilename(), "")) {
+        if (!Objects.equals(image.getOriginalFilename(), "")) {
             imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
             jobSeekerProfile.setProfilePhoto(imageName);
         }
@@ -71,14 +72,13 @@ public class JobSeekerProfileController {
         JobSeekerProfile seekerProfile = jobSeekerProfileService.addNew(jobSeekerProfile);
         try {
             String uploadDir = "photos/candidate/" + seekerProfile.getUserAccountId();
-            if (!Objects.equals(image.getOriginalFilename(), "")) {
+            if (!image.isEmpty()) {
                 FileUploadUtil.saveFile(uploadDir, imageName, image);
             }
-            if (!Objects.equals(pdf.getOriginalFilename(), "")) {
+            if (!resumeName.isEmpty()) {
                 FileUploadUtil.saveFile(uploadDir, resumeName, pdf);
             }
-        } catch (
-                IOException ex) {
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
         return "redirect:/dashboard";
