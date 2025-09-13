@@ -236,7 +236,7 @@ $('.popup-video').magnificPopup({
 
 // blog-dtails-page
 
-if (document.getElementById('default-select')) {
+if (document.getElementById('default-select') && $.fn && $.fn.niceSelect) {
   $('select').niceSelect();
 }
 
@@ -320,7 +320,9 @@ mailChimp();
             $("#search_input").focus();
         });
         $(document).ready(function() {
-          $('select').niceSelect();
+          if ($.fn && $.fn.niceSelect) {
+            $('select').niceSelect();
+          }
         });
 
 
