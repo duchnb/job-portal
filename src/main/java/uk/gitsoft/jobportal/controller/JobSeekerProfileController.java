@@ -53,7 +53,7 @@ public class JobSeekerProfileController {
     }
 
     @GetMapping("/")
-    public String JobsiseekerProfile(Model model) {
+    public String JobSeekerProfile(Model model) {
         JobSeekerProfile jobSeekerProfile = new JobSeekerProfile();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Skills> skills = new ArrayList<>();
