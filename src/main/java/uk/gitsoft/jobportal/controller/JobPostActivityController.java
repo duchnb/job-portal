@@ -3,17 +3,21 @@ package uk.gitsoft.jobportal.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import uk.gitsoft.jobportal.entity.JobPostActivity;
+import uk.gitsoft.jobportal.entity.RecruiterJobsDto;
+import uk.gitsoft.jobportal.entity.RecruiterProfile;
 import uk.gitsoft.jobportal.entity.Users;
 import uk.gitsoft.jobportal.services.JobPostActivityService;
 import uk.gitsoft.jobportal.services.UsersService;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class JobPostActivityController {
@@ -33,10 +37,14 @@ public class JobPostActivityController {
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             String currentUsername = authentication.getName();
             model.addAttribute("username", currentUsername);
+            if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))){
+               List<RecruiterJobsDto> recruiterJobs = jobPostActivityService.getRecruiterJobs(((RecruiterProfile) currentUserProfile).getUserAccountId());
+               model.addAttribute("jobPost", recruiterJobs);
+            }
         }
         model.addAttribute("user", currentUserProfile);
-        model.addAttribute("jobPost", java.util.Collections.emptyList()); // Add an empty list to prevent template error
-        return "dashboard";
+
+        return "_dashboard";
     }
     
     @GetMapping("/dashboard/add")

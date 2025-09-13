@@ -8,7 +8,7 @@ public class JobCompany {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer Id;
+    private Integer companyId;
 
     private String name;
     private String logo;
@@ -16,18 +16,18 @@ public class JobCompany {
     public JobCompany() {
     }
 
-    public JobCompany(Integer id, String name, String logo) {
-        Id = id;
+    public JobCompany(Integer companyId, String name, String logo) {
+        this.companyId = companyId;
         this.name = name;
         this.logo = logo;
     }
 
-    public Integer getId() {
-        return Id;
+    public Integer getCompanyId() {
+        return companyId;
     }
 
-    public void setId(Integer id) {
-        Id = id;
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public String getName() {
@@ -49,7 +49,7 @@ public class JobCompany {
     @Override
     public String toString() {
         return "JobCompany{" +
-                "Id=" + Id +
+                "Id=" + companyId +
                 ", name='" + name + '\'' +
                 ", logo='" + logo + '\'' +
                 '}';

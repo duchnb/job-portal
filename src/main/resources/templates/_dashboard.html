@@ -71,21 +71,20 @@
             </li>
 
         </ul>
-
         <img
                 class="rounded-circle me-3"
                 height="50px"
                 width="50x"
                 th:if="${user.photosImagePath!=null}"
-                th:src="@{${user?.photosImagePath}}"
+                th:src="@{${user.photosImagePath}}"
         />
 
-        <label th:if="${user.firstName != null && user.lastName != null}"
+        <label th:if="${user != null && user.firstName != null && user.lastName != null}"
                th:text="${user.firstName+' '+user.lastName}"
                class="nav-item nav-link px-2 me-3">
         </label>
 
-        <label th:unless="${user.firstName != null && user.lastName != null}" th:text="${username}"
+        <label th:unless="${user != null && user.firstName != null && user.lastName != null}" th:text="${username}"
                class="nav-item nav-link px-2 me-3"></label>
 
         <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
@@ -117,7 +116,7 @@
                                     <span
                                             class="title-span"
                                             sec:authorize="hasAuthority('Recruiter')"
-                                            th:text="'('+ @{${jobPost.totalCandidates}}+' Candidates Applied)'"
+                                            th:text="'('+ ${jobPost.totalCandidates}+' Candidates Applied)'"
                                     >(xx candidates applied)</span
                                     >
                                     <span
@@ -142,7 +141,7 @@
                                 >
                             </div>
                             <div class="col-md-4 text-right">
-                                <label th:text="@{${jobPost.jobCompanyId.name}}"
+                                <label th:text="${jobPost.jobCompanyId.name}"
                                 >Recruiter Company Name</label
                                 >
                             </div>

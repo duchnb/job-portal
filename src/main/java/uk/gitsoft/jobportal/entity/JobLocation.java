@@ -16,10 +16,11 @@ public class JobLocation {
 
     public JobLocation() {
     }
-    public JobLocation(String city, String state, String country) {
+    public JobLocation(int Id, String city, String state, String country) {
         this.city = city;
         this.state = state;
         this.country = country;
+        this.Id = Id;
     }
 
     public Integer getId() {
