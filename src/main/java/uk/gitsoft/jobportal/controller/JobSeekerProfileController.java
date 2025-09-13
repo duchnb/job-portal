@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,16 +18,19 @@ import uk.gitsoft.jobportal.entity.Skills;
 import uk.gitsoft.jobportal.entity.Users;
 import uk.gitsoft.jobportal.repository.UsersRepository;
 import uk.gitsoft.jobportal.services.JobSeekerProfileService;
+import uk.gitsoft.jobportal.util.FileUploadUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("job-seeker-profile")
 public class JobSeekerProfileController {
-    private JobSeekerProfileService jobSeekerProfileService;
-    private UsersRepository usersRepository;
+    private final JobSeekerProfileService jobSeekerProfileService;
+    private final UsersRepository usersRepository;
 
     @Autowired
     public JobSeekerProfileController(JobSeekerProfileService jobSeekerProfileService, UsersRepository usersRepository) {
@@ -48,7 +52,35 @@ public class JobSeekerProfileController {
         List<Skills> skillsList = new ArrayList<>();
         model.addAttribute("profile", jobSeekerProfile);
         model.addAttribute("skills", skillsList);
+        for (Skills skills : jobSeekerProfile.getSkills()) {
+            skills.setJobSeekerProfile(jobSeekerProfile);
+        }
 
+        String imageName = "";
+        String resumeName = "";
+
+        if (Objects.equals(image.getOriginalFilename(), "")) {
+            imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
+            jobSeekerProfile.setProfilePhoto(imageName);
+        }
+
+        if (Objects.equals(pdf.getOriginalFilename(), "")) {
+            resumeName = StringUtils.cleanPath(Objects.requireNonNull(pdf.getOriginalFilename()));
+            jobSeekerProfile.setResume(resumeName);
+        }
+        JobSeekerProfile seekerProfile = jobSeekerProfileService.addNew(jobSeekerProfile);
+        try {
+            String uploadDir = "photos/candidate/" + seekerProfile.getUserAccountId();
+            if (!Objects.equals(image.getOriginalFilename(), "")) {
+                FileUploadUtil.saveFile(uploadDir, imageName, image);
+            }
+            if (!Objects.equals(pdf.getOriginalFilename(), "")) {
+                FileUploadUtil.saveFile(uploadDir, resumeName, pdf);
+            }
+        } catch (
+                IOException ex) {
+            throw new RuntimeException(ex);
+        }
         return "redirect:/dashboard";
     }
 
