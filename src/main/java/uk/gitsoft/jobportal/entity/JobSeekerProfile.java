@@ -9,7 +9,7 @@ import java.util.List;
 public class JobSeekerProfile {
 
     @Id
-    private int userAccountId;
+    private Integer userAccountId;
     @OneToOne
     @JoinColumn(name = "user_account_id")
     @MapsId
@@ -26,7 +26,7 @@ public class JobSeekerProfile {
     @Column(name = "employment_type")
     private String employmentType;
     private String resume;
-    @Column(name ="profile_photo",nullable = true, length = 64)
+    @Column(name = "profile_photo", nullable = true, length = 64)
     private String profilePhoto;
     @OneToMany(targetEntity = Skills.class, mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
     private List<Skills> skills;
@@ -38,7 +38,7 @@ public class JobSeekerProfile {
         this.userId = userId;
     }
 
-    public JobSeekerProfile(int userAccountId, String firstName, String lastName, String city, String state, String country, String workAuthorization, String employmentType, String resume, String profilePhoto, List<Skills> skills) {
+    public JobSeekerProfile(Integer userAccountId, String firstName, String lastName, String city, String state, String country, String workAuthorization, String employmentType, String resume, String profilePhoto, List<Skills> skills) {
         this.userAccountId = userAccountId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,11 +52,11 @@ public class JobSeekerProfile {
         this.skills = skills;
     }
 
-    public int getUserAccountId() {
+    public Integer getUserAccountId() {
         return userAccountId;
     }
 
-    public void setUserAccountId(int userAccountId) {
+    public void setUserAccountId(Integer userAccountId) {
         this.userAccountId = userAccountId;
     }
 
@@ -148,6 +148,13 @@ public class JobSeekerProfile {
         this.skills = skills;
     }
 
+    @Transient
+    public String getPhotosImagePath() {
+        if (profilePhoto == null || userAccountId == null) return null;
+        return "/photos/candidate/" + userAccountId + "/" + profilePhoto;
+
+    }
+
     @Override
     public String toString() {
         return "JobSeekerProfile{" +
@@ -162,7 +169,6 @@ public class JobSeekerProfile {
                 ", employmentType='" + employmentType + '\'' +
                 ", resume='" + resume + '\'' +
                 ", profilePhoto='" + profilePhoto + '\'' +
-                ", skills=" + skills +
                 '}';
     }
 }
