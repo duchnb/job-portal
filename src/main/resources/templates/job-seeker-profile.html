@@ -211,6 +211,7 @@
                                     Profile Photo</label
                                 >
                                 <input
+                                        id="profileImage"
                                         type="file"
                                         name="image"
                                         class="form-control"
@@ -218,13 +219,17 @@
                                 />
                                 <input type="text" name="profilePhoto" th:field="*{profilePhoto}" class="form-control"
                                        hidden/>
-
+                                <!-- Message for user -->
+                                <small id="fileError" style="color:red; display:none;">
+                                    File size exceeds 1 MB. Please choose a smaller image.
+                                </small>
                             </div>
                             <div class="col-md-5 me-5">
                                 <label class="heading_font font_sub_heading_color">
                                     Resume</label
                                 >
                                 <input
+                                        id="profileResume"
                                         sec:authorize="hasAuthority('Job Seeker')"
                                         type="file"
                                         name="pdf"
@@ -233,6 +238,10 @@
                                         accept="application/pdf"
                                 />
                                 <input type="text" name="resume" th:field="*{resume}" class="form-control" hidden/>
+                                <!-- Message for user -->
+                                <small id="resumeError" style="color:red; display:none;">
+                                    File size exceeds 1 MB. Please choose a smaller resume file.
+                                </small>
                                 <a sec:authorize="hasAuthority('Recruiter')"
                                    th:href="@{|/job-seeker-profile/downloadResume?fileName=${profile.resume}&&userID=${profile.userAccountId}|}">Download
                                     Resume</a>
@@ -262,6 +271,7 @@
 
 </div>
 </body>
+<script type="text/javascript" th:src="@{/js/file-validation.js}"></script>
 <script type="text/javascript" th:src="@{/js/vendor/jquery-1.12.4.min.js}"></script>
 <!-- Fallback to CDN for Popper and Bootstrap JS since WebJars are missing -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+VcFTJXoBdj4U+f8G0P0tg8Q" crossorigin="anonymous"></script>
@@ -274,7 +284,7 @@
        $("button").prop( "disabled", true );
 </script>
 <script>
-    // Initialize counter based on existing skill rows (for editing case)
+    // Initialize counter based on existing skill rows (for an editing case)
     var counter = (function(){
         var existing = document.querySelectorAll('#skills-container .skill-row').length;
         return existing > 0 ? existing - 1 : 0; // zero-based index
