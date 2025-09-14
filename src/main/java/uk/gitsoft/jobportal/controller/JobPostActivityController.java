@@ -153,7 +153,7 @@ public class JobPostActivityController {
         }
         model.addAttribute("user", currentUserProfile);
 
-        return "_dashboard";
+        return "/dashboard";
     }
 
     @GetMapping("/dashboard/add")
