@@ -118,7 +118,7 @@ public class JobPostActivityController {
             } else {
                 List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
                         .getCandidatesJobs((JobSeekerProfile) currentUserProfile);
-                List<JobSeekerSave> jobSeekerSavveList = jobSeekerSaveService
+                List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService
                         .getCandidatesJob((JobSeekerProfile) currentUserProfile);
 
                 boolean exist;
@@ -134,7 +134,7 @@ public class JobPostActivityController {
                         }
 
                     }
-                    for (JobSeekerSave jobSeekerSave : jobSeekerSavveList) {
+                    for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
                         if (Objects.equals(jobActivity.getJobPostId(), jobSeekerSave.getJob().getJobPostId())) {
                             jobActivity.setIsSaved(true);
                             saved = true;
@@ -153,7 +153,7 @@ public class JobPostActivityController {
         }
         model.addAttribute("user", currentUserProfile);
 
-        return "/dashboard";
+        return "dashboard";
     }
 
     @GetMapping("/dashboard/add")
