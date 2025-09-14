@@ -1,8 +1,8 @@
 package uk.gitsoft.jobportal.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -11,26 +11,33 @@ import java.util.Date;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private int userId;
 
-    @Column(name = "email", unique = true)
-    @Email(message = "Invalid email format")
+    @Column(unique = true)
     private String email;
-    @Column(name = "password")
-    @NotEmpty(message = "Password cannot be empty")
+
+    @NotEmpty
     private String password;
 
-    @Column(name = "is_active")
     private boolean isActive;
-    
-    @Column(name = "registration_date")
-    private Date registrationDate;
-    @ManyToOne
-    @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
-    private UsersType userType;
 
-    public Users() {
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date registrationDate;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
+    private UserType userTypeId;
+
+    public Users(){
+    }
+
+    public Users(int userId, String email, String password, boolean isActive, Date registrationDate, UserType usersTypeId) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.registrationDate = registrationDate;
+        this.userTypeId = usersTypeId;
     }
 
     public int getUserId() {
@@ -73,11 +80,23 @@ public class Users {
         this.registrationDate = registrationDate;
     }
 
-    public UsersType getUserType() {
-        return userType;
+    public UserType getUserTypeId() {
+        return userTypeId;
     }
 
-    public void setUserType(UsersType userType) {
-        this.userType = userType;
+    public void setUserTypeId(UserType userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", isActive=" + isActive +
+                ", registrationDate=" + registrationDate +
+                ", usersTypeId=" + userTypeId +
+                '}';
     }
 }

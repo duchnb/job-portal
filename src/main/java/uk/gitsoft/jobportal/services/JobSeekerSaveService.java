@@ -1,9 +1,10 @@
 package uk.gitsoft.jobportal.services;
 
-import org.springframework.stereotype.Service;
+import uk.gitsoft.jobportal.entity.JobPostActivity;
 import uk.gitsoft.jobportal.entity.JobSeekerProfile;
 import uk.gitsoft.jobportal.entity.JobSeekerSave;
 import uk.gitsoft.jobportal.repository.JobSeekerSaveRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,13 +15,18 @@ public class JobSeekerSaveService {
 
     public JobSeekerSaveService(JobSeekerSaveRepository jobSeekerSaveRepository) {
         this.jobSeekerSaveRepository = jobSeekerSaveRepository;
+
     }
 
-    public List<JobSeekerSave> getCandidatesJob(JobSeekerProfile userAccountId){
+    public List<JobSeekerSave> getCandidatesJob(JobSeekerProfile userAccountId) {
         return jobSeekerSaveRepository.findByUserId(userAccountId);
     }
 
-    public List<JobSeekerSave> getJobCandidates(JobPostActivityService job){
+    public List<JobSeekerSave> getJobCandidate(JobPostActivity job) {
         return jobSeekerSaveRepository.findByJob(job);
+    }
+
+    public void addNew(JobSeekerSave jobSeekerSave) {
+        jobSeekerSaveRepository.save(jobSeekerSave);
     }
 }

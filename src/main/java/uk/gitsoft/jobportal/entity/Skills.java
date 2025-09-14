@@ -3,18 +3,16 @@ package uk.gitsoft.jobportal.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "skills")
+@Table(name= "skills")
 public class Skills {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "experience_level")
     private String experienceLevel;
-    @Column(name = "years_of_experience")
     private String yearsOfExperience;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "job_seeker_profile")
     private JobSeekerProfile jobSeekerProfile;

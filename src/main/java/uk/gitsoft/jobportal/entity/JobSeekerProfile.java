@@ -10,36 +10,33 @@ public class JobSeekerProfile {
 
     @Id
     private Integer userAccountId;
+
     @OneToOne
     @JoinColumn(name = "user_account_id")
     @MapsId
     private Users userId;
-    @Column(name = "first_name")
+
     private String firstName;
-    @Column(name = "last_name")
     private String lastName;
     private String city;
     private String state;
     private String country;
-    @Column(name = "work_authorization")
     private String workAuthorization;
-    @Column(name = "employment_type")
     private String employmentType;
     private String resume;
-    @Column(name = "profile_photo", nullable = true, length = 64)
+    @Column(nullable = true, length = 64)
     private String profilePhoto;
-    @OneToMany(targetEntity = Skills.class, mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
-    private List<Skills> skills;
 
-    public JobSeekerProfile() {
-    }
+    @OneToMany(targetEntity = Skills.class, cascade = CascadeType.ALL, mappedBy = "jobSeekerProfile")
+    private List<Skills> skills;
 
     public JobSeekerProfile(Users userId) {
         this.userId = userId;
     }
 
-    public JobSeekerProfile(Integer userAccountId, String firstName, String lastName, String city, String state, String country, String workAuthorization, String employmentType, String resume, String profilePhoto, List<Skills> skills) {
+    public JobSeekerProfile(Integer userAccountId, Users userId, String firstName, String lastName, String city, String state, String country, String workAuthorization, String employmentType, String resume, String profilePhoto, List<Skills> skills) {
         this.userAccountId = userAccountId;
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.city = city;
@@ -50,6 +47,10 @@ public class JobSeekerProfile {
         this.resume = resume;
         this.profilePhoto = profilePhoto;
         this.skills = skills;
+    }
+
+    public JobSeekerProfile() {
+
     }
 
     public Integer getUserAccountId() {
@@ -149,10 +150,11 @@ public class JobSeekerProfile {
     }
 
     @Transient
-    public String getPhotosImagePath() {
-        if (profilePhoto == null || userAccountId == null) return null;
-        return "photos/candidate/" + userAccountId + "/" + profilePhoto;
-
+    public String getPhotosImagePath(){
+        if(profilePhoto == null ||  userAccountId ==null){
+            return null;
+        }
+        return "/photos/candidate/" + userAccountId + "/" + profilePhoto;
     }
 
     @Override

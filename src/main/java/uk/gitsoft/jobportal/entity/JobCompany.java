@@ -1,13 +1,16 @@
 package uk.gitsoft.jobportal.entity;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "job_company")
 public class JobCompany {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Integer Id;
 
     private String name;
@@ -16,8 +19,8 @@ public class JobCompany {
     public JobCompany() {
     }
 
-    public JobCompany(Integer Id, String name, String logo) {
-        this.Id = Id;
+    public JobCompany(Integer id, String name, String logo) {
+        this.Id = id;
         this.name = name;
         this.logo = logo;
     }
@@ -26,8 +29,8 @@ public class JobCompany {
         return Id;
     }
 
-    public void setId(Integer companyId) {
-        this.Id = companyId;
+    public void setId(Integer id) {
+        this.Id = id;
     }
 
     public String getName() {
@@ -49,7 +52,7 @@ public class JobCompany {
     @Override
     public String toString() {
         return "JobCompany{" +
-                "Id=" + Id +
+                "id=" + Id +
                 ", name='" + name + '\'' +
                 ", logo='" + logo + '\'' +
                 '}';

@@ -1,13 +1,14 @@
 package uk.gitsoft.jobportal.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "job_location")
 public class JobLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Integer Id;
 
     private String city;
@@ -16,11 +17,12 @@ public class JobLocation {
 
     public JobLocation() {
     }
-    public JobLocation(int Id, String city, String state, String country) {
-        this.city = city;
-        this.state = state;
+
+    public JobLocation(String country, String state, String city, Integer id) {
         this.country = country;
-        this.Id = Id;
+        this.state = state;
+        this.city = city;
+        Id = id;
     }
 
     public Integer getId() {

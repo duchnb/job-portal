@@ -1,14 +1,13 @@
 package uk.gitsoft.jobportal.repository;
 
+import uk.gitsoft.jobportal.entity.IRecruiterJobs;
+import uk.gitsoft.jobportal.entity.JobPostActivity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import uk.gitsoft.jobportal.entity.IRecruiterJobs;
-import uk.gitsoft.jobportal.entity.JobPostActivity;
 
 import java.time.LocalDate;
 import java.util.List;
-
 
 public interface JobPostActivityRepository extends JpaRepository<JobPostActivity, Integer> {
 
@@ -19,10 +18,9 @@ public interface JobPostActivityRepository extends JpaRepository<JobPostActivity
             " on j.job_company_id = c.id " +
             " left join job_seeker_apply s " +
             " on s.job = j.job_post_id " +
-            " where j.posted_by_id = :recruiter " +
+            " where j.posted_by_id = ?1 " +
             " GROUP By j.job_post_id" ,nativeQuery = true)
     List<IRecruiterJobs> getRecruiterJobs(@Param("recruiter") int recruiter);
-
 
     @Query(value = "SELECT * FROM job_post_activity j INNER JOIN job_location l on j.job_location_id=l.id  WHERE j" +
             ".job_title LIKE %:job%"
@@ -48,5 +46,5 @@ public interface JobPostActivityRepository extends JpaRepository<JobPostActivity
                                  @Param("location") String location,
                                  @Param("remote") List<String> remote,
                                  @Param("type") List<String> type,
-                                 @Param("date") LocalDate date);
+                                 @Param("date") LocalDate searchDate);
 }

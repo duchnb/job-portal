@@ -1,5 +1,7 @@
 package uk.gitsoft.jobportal.config;
 
+
+import uk.gitsoft.jobportal.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,36 +13,54 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import uk.gitsoft.jobportal.services.CustomUserDetailsService;
 
 @Configuration
 public class WebSecurityConfig {
+
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+    private final String[] publicUrl = {"/",
+            "/global-search/**",
+            "/register",
+            "/register/**",
+            "/webjars/**",
+            "/resources/**",
+            "/assets/**",
+            "/css/**",
+            "/summernote/**",
+            "/js/**",
+            "/*.css",
+            "/*.js",
+            "/*.js.map",
+            "/fonts**", "/favicon.ico", "/resources/**", "/error"};
+
     @Autowired
-    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
+                             CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.customUserDetailsService = customUserDetailsService;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
-    private final String[] publicUrl = {"/",
-            "/global-search/**", "/register", "/register/**", "/webjars/**", "/resources/**", "/assets/**",
-            "/summernote/**", "/*.css", "/*.js", "/*.js.map", "/fonts**", "/favicon.ico", "/error", "/css/**", "/js/**", "/images/**"};
-
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
-        http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers(publicUrl).permitAll();
-            auth.anyRequest().authenticated();
-        });
-        http.formLogin(form -> form.loginPage("/login").permitAll().successHandler(customAuthenticationSuccessHandler))
+
+        http.authorizeHttpRequests(
+                auth -> {
+                    auth.requestMatchers(publicUrl).permitAll();
+                    auth.anyRequest().authenticated();
+                });
+
+        http.formLogin(
+                form -> form.loginPage("/login").permitAll()
+                        .successHandler(customAuthenticationSuccessHandler))
                 .logout(logout -> {
                     logout.logoutUrl("/logout");
                     logout.logoutSuccessUrl("/");
                 }).cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
+
         return http.build();
     }
 
@@ -56,4 +76,5 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

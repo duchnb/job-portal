@@ -14,15 +14,16 @@ public class JobPostActivity {
     private Integer jobPostId;
 
     @ManyToOne
-    @JoinColumn(name = "postedById", referencedColumnName = "user_id")
+    @JoinColumn(name="postedById",referencedColumnName = "userId")
     private Users postedById;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "jobLocationId", referencedColumnName = "Id")
-    private JobLocation jobLocation;
+    @JoinColumn(name ="jobLocationId", referencedColumnName = "Id")
+    private JobLocation jobLocationId;
+
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "jobCompanyId", referencedColumnName = "Id")
+    @JoinColumn(name = "jobCompanyId",referencedColumnName = "Id")
     private JobCompany jobCompanyId;
 
     @Transient
@@ -31,32 +32,33 @@ public class JobPostActivity {
     @Transient
     private Boolean isSaved;
 
-    @Length(max = 1000)
+    @Length(max = 10000)
     private String descriptionOfJob;
+
 
     private String jobType;
     private String salary;
     private String remote;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date PostedDate;
+    private Date postedDate;
     private String jobTitle;
 
     public JobPostActivity() {
     }
 
-    public JobPostActivity(Integer jobPostId, Users postedById, JobLocation jobLocation, JobCompany jobCompanyId, Boolean isActive, Boolean isSaved, String descriptionOfJob, String jobType, String salary, String remote, Date postedDate, String jobTitle) {
+    public JobPostActivity(Integer jobPostId, Users postedById, JobLocation jobLocationId, JobCompany jobCompany, Boolean isActive, Boolean isSaved, String descriptionOfJob, String jobType, String salary, String remote, Date postedDate, String jobTitle) {
         this.jobPostId = jobPostId;
         this.postedById = postedById;
-        this.jobLocation = jobLocation;
-        this.jobCompanyId = jobCompanyId;
+        this.jobLocationId = jobLocationId;
+        this.jobCompanyId = jobCompany;
         this.isActive = isActive;
         this.isSaved = isSaved;
         this.descriptionOfJob = descriptionOfJob;
         this.jobType = jobType;
         this.salary = salary;
         this.remote = remote;
-        PostedDate = postedDate;
+        this.postedDate = postedDate;
         this.jobTitle = jobTitle;
     }
 
@@ -76,32 +78,20 @@ public class JobPostActivity {
         this.postedById = postedById;
     }
 
-    public JobLocation getJobLocation() {
-        return jobLocation;
-    }
-
-    public void setJobLocation(JobLocation jobLocation) {
-        this.jobLocation = jobLocation;
-    }
-
-    // Alias accessors for Thymeleaf form binding compatibility
-    // The template uses "jobLocationId" as the property name, but the entity field is "jobLocation".
-    // Providing these accessors exposes a bean property named "jobLocationId" that maps to the same field.
-    @Transient
     public JobLocation getJobLocationId() {
-        return jobLocation;
+        return jobLocationId;
     }
 
-    public void setJobLocationId(JobLocation jobLocation) {
-        this.jobLocation = jobLocation;
+    public void setJobLocationId(JobLocation jobLocationId) {
+        this.jobLocationId = jobLocationId;
     }
 
     public JobCompany getJobCompanyId() {
         return jobCompanyId;
     }
 
-    public void setJobCompanyId(JobCompany jobCompanyId) {
-        this.jobCompanyId = jobCompanyId;
+    public void setJobCompanyId(JobCompany jobCompany) {
+        this.jobCompanyId = jobCompany;
     }
 
     public Boolean getIsActive() {
@@ -153,11 +143,11 @@ public class JobPostActivity {
     }
 
     public Date getPostedDate() {
-        return PostedDate;
+        return postedDate;
     }
 
     public void setPostedDate(Date postedDate) {
-        PostedDate = postedDate;
+        this.postedDate = postedDate;
     }
 
     public String getJobTitle() {
@@ -173,15 +163,15 @@ public class JobPostActivity {
         return "JobPostActivity{" +
                 "jobPostId=" + jobPostId +
                 ", postedById=" + postedById +
-                ", jobLocation=" + jobLocation +
-                ", jobCompanyId=" + jobCompanyId +
+                ", jobLocationId=" + jobLocationId +
+                ", jobCompany=" + jobCompanyId +
                 ", isActive=" + isActive +
                 ", isSaved=" + isSaved +
                 ", descriptionOfJob='" + descriptionOfJob + '\'' +
                 ", jobType='" + jobType + '\'' +
                 ", salary='" + salary + '\'' +
                 ", remote='" + remote + '\'' +
-                ", PostedDate=" + PostedDate +
+                ", postedDate=" + postedDate +
                 ", jobTitle='" + jobTitle + '\'' +
                 '}';
     }

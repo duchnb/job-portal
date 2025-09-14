@@ -1,13 +1,11 @@
 package uk.gitsoft.jobportal.entity;
 
-
 import jakarta.persistence.*;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId","job"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "job"}))
 public class JobSeekerSave implements Serializable {
 
     @Id
@@ -60,7 +58,7 @@ public class JobSeekerSave implements Serializable {
         return "JobSeekerSave{" +
                 "id=" + id +
                 ", userId=" + userId.toString() +
-                ", jobPostId=" + job.toString() +
+                ", job=" + job.toString() +
                 '}';
     }
 }

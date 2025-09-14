@@ -1,18 +1,19 @@
 package uk.gitsoft.jobportal.services;
 
+import uk.gitsoft.jobportal.entity.Users;
+import uk.gitsoft.jobportal.repository.UsersRepository;
+import uk.gitsoft.jobportal.util.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import uk.gitsoft.jobportal.entity.Users;
-import uk.gitsoft.jobportal.repository.UsersRepository;
-import uk.gitsoft.jobportal.util.CustomUserDetails;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
+
     @Autowired
     public CustomUserDetailsService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
@@ -20,7 +21,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-     Users users = usersRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new CustomUserDetails(users);
+
+        Users user = usersRepository.findByEmail(username).orElseThrow(
+                () -> new UsernameNotFoundException("Could not find user with the given username")
+        );
+        return new CustomUserDetails(user);
     }
 }

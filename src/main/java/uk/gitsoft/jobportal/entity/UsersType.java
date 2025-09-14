@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-@Entity
-@Table(name = "users_type")
+// Note: This class is no longer a JPA entity to avoid duplicate mapping with UserType.
 public class UsersType {
 
     @Id

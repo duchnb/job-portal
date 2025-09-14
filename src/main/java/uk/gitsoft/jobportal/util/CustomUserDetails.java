@@ -1,27 +1,26 @@
 package uk.gitsoft.jobportal.util;
 
+import uk.gitsoft.jobportal.entity.UserType;
+import uk.gitsoft.jobportal.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import uk.gitsoft.jobportal.entity.Users;
-import uk.gitsoft.jobportal.entity.UsersType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 public class CustomUserDetails implements UserDetails {
-    private final Users user;
 
-    public CustomUserDetails(Users user) {
-        this.user = user;
+    private final Users users;
+
+    public CustomUserDetails(Users users) {
+        this.users = users;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UsersType usersType = user.getUserType();
+        UserType usersType = users.getUserTypeId();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(usersType.getUserTypeName()));
         return authorities;
@@ -29,12 +28,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return users.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return users.getEmail();
     }
 
     @Override
