@@ -4,24 +4,28 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-// Note: This class is no longer a JPA entity to avoid duplicate mapping with UserType.
-public class UsersType {
+@Entity
+@Table(name= "users_type")
+public class UserType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_type_id")
     private int userTypeId;
+
     @Column(name = "user_type_name")
     private String userTypeName;
 
-    @OneToMany(mappedBy = "userType", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Users.class,mappedBy = "userTypeId", cascade = CascadeType.ALL)
     private List<Users> users;
 
-    public UsersType() {
+    public UserType() {
     }
 
-    public UsersType(String userTypeName) {
+    public UserType(int userTypeId, String userTypeName, List<Users> users) {
+        this.userTypeId = userTypeId;
         this.userTypeName = userTypeName;
+        this.users = users;
     }
 
     public int getUserTypeId() {
@@ -39,6 +43,7 @@ public class UsersType {
     public void setUserTypeName(String userTypeName) {
         this.userTypeName = userTypeName;
     }
+
     public List<Users> getUsers() {
         return users;
     }
@@ -50,9 +55,8 @@ public class UsersType {
     @Override
     public String toString() {
         return "UsersType{" +
-                "userTypeId=" + userTypeId +
-                ", userTypeName='" + userTypeName + '\'' +
+                "userTypeName='" + userTypeName + '\'' +
+                ", userTypeId=" + userTypeId +
                 '}';
     }
-
 }
