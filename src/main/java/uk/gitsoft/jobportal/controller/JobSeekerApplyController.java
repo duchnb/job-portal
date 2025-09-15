@@ -42,12 +42,16 @@ public class JobSeekerApplyController {
         this.jobSeekerProfileService = jobSeekerProfileService;
     }
 
-    @GetMapping("/job-details-apply/{id}")
+    @GetMapping("/job-details/apply/{id}")
     public String display(@PathVariable("id") int id, Model model){
         JobPostActivity jobDetails = jobPostActivityService.getOne(id);
 
         List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getJobCandidates(jobDetails);
         List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getJobCandidate(jobDetails);
+
+        // Default values to ensure buttons render even when lists are empty
+        boolean alreadyApplied = false;
+        boolean alreadySaved = false;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -55,61 +59,57 @@ public class JobSeekerApplyController {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))) {
                 RecruiterProfile user = recruiterProfileService.getCurrentRecruiterProfile();
                 if (user != null) {
-                    model.addAttribute("applyList",jobSeekerApplyList);
+                    model.addAttribute("applyList", jobSeekerApplyList);
                 }
-            }else{
+            } else {
                 JobSeekerProfile user = jobSeekerProfileService.getCurrentSeekerProfile();
                 if (user != null) {
-                    boolean exist;
-                    boolean saved;
-                    for (JobSeekerApply jobActivity : jobSeekerApplyList) {
-                        exist = false;
-                        saved = false;
-                        for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
-                            if (Objects.equals(jobSeekerApply.getUserId().getUserAccountId(), user.getUserAccountId())) {
-                                exist = true;
-                                break;
-                            }
+                    // Determine if current seeker already applied/saved for this job
+                    for (JobSeekerApply applied : jobSeekerApplyList) {
+                        if (Objects.equals(applied.getUserId().getUserAccountId(), user.getUserAccountId())) {
+                            alreadyApplied = true;
+                            break;
                         }
-                        for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
-                            if (Objects.equals(jobSeekerSave.getUserId().getUserAccountId(), user.getUserAccountId())) {
-                                saved = true;
-                                break;
-                            }
+                    }
+                    for (JobSeekerSave savedItem : jobSeekerSaveList) {
+                        if (Objects.equals(savedItem.getUserId().getUserAccountId(), user.getUserAccountId())) {
+                            alreadySaved = true;
+                            break;
                         }
-                        model.addAttribute("alreadyApplied", exist);
-                        model.addAttribute("alreadySaved", saved);
                     }
                 }
             }
         }
 
-        JobSeekerApply jobSeekerApply = new JobSeekerApply();
-        model.addAttribute("applyJob",jobDetails);
+        // Expose flags and required model attributes
+        model.addAttribute("alreadyApplied", alreadyApplied);
+        model.addAttribute("alreadySaved", alreadySaved);
 
-        model.addAttribute("jobDetails",jobDetails);
-        model.addAttribute("user",usersService.getCurrentUserProfile());
+        // Provide a backing object for the form
+        JobSeekerApply jobSeekerApply = new JobSeekerApply();
+        model.addAttribute("applyJob", jobSeekerApply);
+
+        model.addAttribute("jobDetails", jobDetails);
+        model.addAttribute("user", usersService.getCurrentUserProfile());
         return "job-details";
     }
 
 
     @PostMapping("/job-details-apply/{id}")
-    public String apply(@RequestParam("id") int id, JobSeekerApply jobSeekerApply){
+    public String apply(@PathVariable("id") int id, JobSeekerApply jobSeekerApply){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(!(authentication instanceof AnonymousAuthenticationToken)){
-            String currentUserName = authentication.getName();
-            Users user = usersService.findByEmail(currentUserName);
-            Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(id);
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            JobSeekerProfile seekerProfile = jobSeekerProfileService.getCurrentSeekerProfile();
             JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
 
-            if(seekerProfile.isPresent() && jobPostActivity != null){
+            if (seekerProfile != null && jobPostActivity != null) {
                 jobSeekerApply = new JobSeekerApply();
-                jobSeekerApply.setUserId(seekerProfile.get());
+                jobSeekerApply.setUserId(seekerProfile);
                 jobSeekerApply.setJob(jobPostActivity);
                 jobSeekerApply.setApplyDate(new Date());
-            }else{
-                throw new RuntimeException("User not found");
+            } else {
+                throw new RuntimeException("User or Job not found");
             }
 
             jobSeekerApplyService.addNew(jobSeekerApply);
