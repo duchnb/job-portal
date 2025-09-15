@@ -193,8 +193,6 @@
                         </div>
                     </div>
                 </div>
-                <input id="hidJob" name="job" th:value="${job}" hidden>
-                <input id="hidLoc" name="location" th:value="${location}" hidden>
             </form>
         </div>
     </div>
@@ -203,9 +201,9 @@
         <div class="box">
             <h1 class="primary-title">Dashboard</h1>
             <div class="inner">
-                <input id="job" class="radius-left" type="text" placeholder="Search for a job" name="job"
+                <input id="job" class="radius-left" type="text" placeholder="Search for a job" name="job" form="myForm"
                        th:value="${job}"/>
-                <input id="loc" class="" type="text" placeholder="Job Location" name="location" th:value="${location}"/>
+                <input id="loc" class="" type="text" placeholder="Job Location" name="location" form="myForm" th:value="${location}"/>
                 <button class="radius-right" type="submit" form="myForm"><i class="fa fa-search"></i></button>
             </div>
         </div>
@@ -215,7 +213,7 @@
             <th:block th:each="jobPost:${jobPost}">
                 <a th:href="@{/job-details-apply/{id}(id=${jobPost.jobPostId})}"
                    style=" text-decoration:none; color:black;">
-                    <div onclick="window.location=/job-details-apply/{id}(id=${jobPost.jobPostId})" class="job-row">
+                    <div class="job-row">
                         <div class="row ">
                             <div class="col-md-4">
                                 <label class="job-title text-left">
