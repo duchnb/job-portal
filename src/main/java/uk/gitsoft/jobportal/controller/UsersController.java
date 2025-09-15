@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,10 +34,37 @@ public class UsersController {
     }
 
     @GetMapping("/register")
-    public String register(Model model){
+    public String register(Model model, @RequestParam(value = "type", required = false) String type){
         List<UserType> usersTypes = usersTypeService.getAll();
-        model.addAttribute("getAllTypes",usersTypes);
-        model.addAttribute("user",new Users());
+
+        Users user = new Users();
+        if (type != null) {
+            String t = type.trim().toLowerCase();
+            UserType preselect = null;
+            for (UserType ut : usersTypes) {
+                String name = ut.getUserTypeName() != null ? ut.getUserTypeName().toLowerCase() : "";
+                if (("seeker".equals(t) || "jobseeker".equals(t) || "job-seeker".equals(t) || "candidate".equals(t)) && name.contains("job") && name.contains("seeker")) {
+                    preselect = ut; break;
+                }
+                if (("recruiter".equals(t) || "employer".equals(t)) && name.contains("recruiter")) {
+                    preselect = ut; break;
+                }
+            }
+            if (preselect == null) {
+                // fallback: try exact contains words
+                for (UserType ut : usersTypes) {
+                    String name = ut.getUserTypeName() != null ? ut.getUserTypeName().toLowerCase() : "";
+                    if (t.contains("recruit") && name.contains("recruit")) { preselect = ut; break; }
+                    if (t.contains("seek") && name.contains("seek")) { preselect = ut; break; }
+                }
+            }
+            if (preselect != null) {
+                user.setUserTypeId(preselect);
+            }
+        }
+
+        model.addAttribute("getAllTypes", usersTypes);
+        model.addAttribute("user", user);
         return "register";
     }
 
