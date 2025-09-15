@@ -20,7 +20,7 @@
 <body>
 <header class="navbar navbar-expand-lg navbar-dark">
     <label class="mt-2 ms-5 font-weight-bold h5"
-    ><a th:href="@{/dashboard/}">hotdevjobs</a
+    ><a th:href="@{/}">hotdevjobs</a
     ><span class="logo_com font-weight-bold h5" style="color: white">
           .com</span
     ></label
@@ -39,27 +39,26 @@
 
     <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav m-auto mt-2 mt-lg-0">
-
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/dashboard/}"
-                ><i class="fas fa-search"></i>Search for Jobs</a
-                >
+            <li class="nav-item ">
+                <a class="nav-link" th:href="@{/login}">
+                    <i class="fa-solid fa-user"></i>Login</a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link" th:href="@{/saved-jobs/}">
-                    <i class="fa-solid fa-eye"></i>View Saved Jobs</a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" th:href="@{/job-seeker-profile/}">
-                    <i class="fa-solid fa-pencil"></i>Edit Profile</a>
+                <a class="nav-link" th:href="@{/register}">
+                    <i class="fa-solid fa-pencil"></i>Register</a>
             </li>
 
 
         </ul>
-
+        <img
+                class="rounded-circle me-3"
+                height="50px"
+                width="50x"
+                src="../assets/user.png"
+                alt="guest"/>
         <label class="nav-item nav-link px-2 me-3">Guest</label>
 
-        <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
+        <button class="myBtn-light me-5" onclick="window.location.href='/logout'"><i class="fa fa-home"></i></button>
     </div>
 </header>
 <section class="section">
