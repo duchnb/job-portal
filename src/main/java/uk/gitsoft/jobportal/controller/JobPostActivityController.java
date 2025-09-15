@@ -135,10 +135,15 @@ public class JobPostActivityController {
                             break;
                         }
                     }
-                    if (!exist) {
+                    // Mark applied/saved flags explicitly to avoid nulls in template
+                    if (exist) {
+                        jobActivity.setIsActive(true);
+                    } else {
                         jobActivity.setIsActive(false);
                     }
-                    if (!saved) {
+                    if (saved) {
+                        jobActivity.setIsSaved(true);
+                    } else {
                         jobActivity.setIsSaved(false);
                     }
 

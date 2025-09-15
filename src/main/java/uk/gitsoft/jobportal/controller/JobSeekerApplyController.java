@@ -42,7 +42,7 @@ public class JobSeekerApplyController {
         this.jobSeekerProfileService = jobSeekerProfileService;
     }
 
-    @GetMapping("/job-details/apply/{id}")
+    @GetMapping("/job-details-apply/{id}")
     public String display(@PathVariable("id") int id, Model model){
         JobPostActivity jobDetails = jobPostActivityService.getOne(id);
 
