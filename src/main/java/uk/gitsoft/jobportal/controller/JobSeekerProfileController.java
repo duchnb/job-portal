@@ -32,8 +32,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/job-seeker-profile")
 public class JobSeekerProfileController {
-    private JobSeekerProfileService jobSeekerProfileService;
-    private UsersRepository usersRepository;
+    private final JobSeekerProfileService jobSeekerProfileService;
+    private final UsersRepository usersRepository;
 
     @Autowired
 
