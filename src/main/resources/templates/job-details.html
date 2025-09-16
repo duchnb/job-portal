@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" style="height: 100%">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org/"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" style="height: 100%">
 <head>
     <meta charset="UTF-8"/>
     <title>Candidate Dashboard</title>
@@ -19,11 +20,11 @@
 <body th:object="${jobDetails}" style="font-family: 'Montserrat';height: 100%">
 
 <header class="navbar navbar-expand-lg navbar-dark">
-    <label class="mt-2 ms-5 font-weight-bold h5"
-    ><a th:href="@{/dashboard/}">hotdevjobs</a
-    ><span class="logo_com font-weight-bold h5" style="color: white">
-          .com</span
-    ></label
+    <label class="mt-2 ms-5 font-weight-bold h5">
+        <a th:href="@{/dashboard/}">hotdevjobs
+            <span class="logo_com font-weight-bold h5" style="color: white">
+    .com</span></a>
+    </label
     >
     <button
             class="navbar-toggler"
@@ -207,9 +208,9 @@
 <script>
     var element = document.getElementById('back-link');
     element.setAttribute('href', document.referrer);
-    element.onclick = function() {
-      history.back();
-      return false;
+    element.onclick = function () {
+        history.back();
+        return false;
     }
 </script>
 </body>
