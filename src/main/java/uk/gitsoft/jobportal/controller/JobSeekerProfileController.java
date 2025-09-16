@@ -10,6 +10,7 @@ import uk.gitsoft.jobportal.entity.JobSeekerProfile;
 import uk.gitsoft.jobportal.entity.Skills;
 import uk.gitsoft.jobportal.entity.Users;
 import uk.gitsoft.jobportal.repository.UsersRepository;
+import uk.gitsoft.jobportal.repository.SkillsRepository;
 import uk.gitsoft.jobportal.services.JobSeekerProfileService;
 import uk.gitsoft.jobportal.util.FileDownloadUtil;
 import uk.gitsoft.jobportal.util.FileUploadUtil;
@@ -34,18 +35,21 @@ import java.util.Optional;
 public class JobSeekerProfileController {
     private final JobSeekerProfileService jobSeekerProfileService;
     private final UsersRepository usersRepository;
+    private final SkillsRepository skillsRepository;
 
     @Autowired
 
-    public JobSeekerProfileController(JobSeekerProfileService jobSeekerProfileService, UsersRepository usersRepository) {
+    public JobSeekerProfileController(JobSeekerProfileService jobSeekerProfileService, UsersRepository usersRepository, SkillsRepository skillsRepository) {
         this.jobSeekerProfileService = jobSeekerProfileService;
         this.usersRepository = usersRepository;
+        this.skillsRepository = skillsRepository;
     }
 
     @PostMapping("/addNew")
     public String addNew(JobSeekerProfile jobSeekerProfile,
                          @RequestParam("image") MultipartFile image,
                          @RequestParam("pdf") MultipartFile pdf,
+                         @RequestParam(value = "removedSkillIds", required = false) String removedSkillIds,
                          Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -59,8 +63,49 @@ public class JobSeekerProfileController {
         model.addAttribute("profile", jobSeekerProfile);
         model.addAttribute("skills", skillsList);
 
-        for (Skills skills : jobSeekerProfile.getSkills()) {
-            skills.setJobSeekerProfile(jobSeekerProfile);
+        // Track deleted skill IDs if provided
+        if (removedSkillIds != null && !removedSkillIds.trim().isEmpty()) {
+            String[] parts = removedSkillIds.split(",");
+            List<Integer> idsToDelete = new ArrayList<>();
+            for (String p : parts) {
+                try {
+                    idsToDelete.add(Integer.parseInt(p.trim()));
+                } catch (NumberFormatException ignored) {}
+            }
+            if (!idsToDelete.isEmpty()) {
+                // delete in batch
+                skillsRepository.deleteAllByIdInBatch(idsToDelete);
+            }
+        }
+
+        // Clean up skills: remove empty rows, delete junk ones with IDs, and set back-reference
+        if (jobSeekerProfile.getSkills() != null) {
+            List<Skills> cleaned = new ArrayList<>();
+            List<Integer> emptyExistingIds = new ArrayList<>();
+            for (Skills skills : jobSeekerProfile.getSkills()) {
+                String name = skills.getName();
+                String yoe = skills.getYearsOfExperience();
+                String level = skills.getExperienceLevel();
+                boolean levelEmpty = (level == null || level.trim().isEmpty() || "Experience Level".equalsIgnoreCase(level.trim()));
+                boolean empty = (name == null || name.trim().isEmpty())
+                        && (yoe == null || yoe.trim().isEmpty())
+                        && levelEmpty;
+                if (empty) {
+                    if (skills.getId() != null) {
+                        emptyExistingIds.add(skills.getId());
+                    }
+                    // skip adding this empty row
+                    continue;
+                }
+                // valid skill row
+                skills.setJobSeekerProfile(jobSeekerProfile);
+                cleaned.add(skills);
+            }
+            // Physically delete any existing empty skills from DB to avoid showing empty rows later
+            if (!emptyExistingIds.isEmpty()) {
+                skillsRepository.deleteAllByIdInBatch(emptyExistingIds);
+            }
+            jobSeekerProfile.setSkills(cleaned);
         }
 
         String imageName = "";

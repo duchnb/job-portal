@@ -30,7 +30,8 @@
     <div class="col-5 coffee_mug_background">
         <div class="logo_left mt-3 pt-4 ms-5 pl-5">
             <h2 class="logo" style="color: white">
-                hotdevjobs <span class="logo_com">.com</span>
+                <h2 class="logo"><a th:href="@{/}" class="text-white">hotdevjobs
+                    <span class="logo_com">.com</span></a></h2>
             </h2>
         </div>
     </div>
@@ -153,11 +154,12 @@
                         >Skills</label>
                         <div id="skills-container">
                             <div class="skill-row" th:each="skills, iterStat : *{skills}">
-                                <div class="row">
+                                <div class="row align-items-end">
                                     <div class="col-md-4 pr-1">
                                         <input
                                                 type="text"
                                                 th:field="*{skills[__${iterStat.index}__].id}"
+                                                class="skill-id"
                                                 hidden
                                         />
                                         <input
@@ -175,7 +177,7 @@
                                                 th:field="*{skills[__${iterStat.index}__].yearsOfExperience}"
                                         />
                                     </div>
-                                    <div class="form-group col-md-4 pl-1">
+                                    <div class="form-group col-md-3 pl-1">
                                         <select
                                                 required
                                                 class="form-control"
@@ -186,6 +188,9 @@
                                             <option value="Intermediate">Intermediate</option>
                                             <option value="Advance">Advance</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-1 pl-1">
+                                        <button type="button" class="btn btn-link text-danger remove-skill" title="Remove skill">Remove</button>
                                     </div>
                                 </div>
                             </div>
@@ -216,6 +221,7 @@
                                         name="image"
                                         class="form-control"
                                         accept="image/png, image/jpeg"
+
                                 />
                                 <input type="text" name="profilePhoto" th:field="*{profilePhoto}" class="form-control"
                                        hidden/>
@@ -234,7 +240,7 @@
                                         type="file"
                                         name="pdf"
                                         class="form-control"
-                                        required="true"
+
                                         accept="application/pdf"
                                 />
                                 <input type="text" name="resume" th:field="*{resume}" class="form-control" hidden/>
@@ -251,6 +257,7 @@
                         <div class="row mt-3 col d-flex justify-content-center"
                              sec:authorize="hasAuthority('Job Seeker')">
                             <div class="text-right">
+                                <input type="hidden" id="removedSkillIds" name="removedSkillIds" value=""/>
                                 <button
                                         type="submit"
                                         id="submit2"
@@ -294,21 +301,24 @@
         e.preventDefault();
         counter++;
         var newRow = jQuery(
-            "<div class='skill-row'><div class='row'>"+
+            "<div class='skill-row'><div class='row align-items-end'>"+
             "    <div class='col-md-4 pr-1'>"+
-            "      <input hidden type='text' class='form-control' name='skills["+counter+"].id' />"+
+            "      <input hidden type='text' class='form-control skill-id' name='skills["+counter+"].id' />"+
             "      <input placeholder='Skill Name' type='text' class='form-control' name='skills["+counter+"].name' />"+
             "    </div>"+
             "    <div class='col-md-4 px-1'>"+
             "      <input placeholder='Years of Experience' type='text' class='form-control' name='skills["+counter+"].yearsOfExperience' />"+
             "    </div>"+
-            "    <div class='form-group col-md-4 pl-1'>"+
+            "    <div class='form-group col-md-3 pl-1'>"+
             "      <select required class='form-control' name='skills["+counter+"].experienceLevel'>"+
             "        <option value='Experience Level' selected>Experience Level</option>"+
             "        <option value='Beginner'>Beginner</option>"+
             "        <option value='Intermediate'>Intermediate</option>"+
             "        <option value='Advance'>Advance</option>"+
             "      </select>"+
+            "    </div>"+
+            "    <div class='col-md-1 pl-1'>"+
+            "      <button type='button' class='btn btn-link text-danger remove-skill' title='Remove skill'>Remove</button>"+
             "    </div>"+
             "  </div></div>"
         );
@@ -318,6 +328,18 @@
             // Initialize niceSelect on the newly added select only
             $container.find('.skill-row:last select').niceSelect();
         }
+    });
+
+    // Remove skill handler
+    $(document).on('click', '.remove-skill', function () {
+        var $row = $(this).closest('.skill-row');
+        var idVal = $row.find('.skill-id').val();
+        if (idVal) {
+            var $hidden = $('#removedSkillIds');
+            var current = $hidden.val();
+            $hidden.val(current ? current + ',' + idVal : idVal);
+        }
+        $row.remove();
     });
 </script>
 </html>
