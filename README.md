@@ -43,6 +43,7 @@ This project follows a complete end-to-end architecture typical in modern enterp
 
 ---
 
+<a id="overview"></a>
 # 🧾 Overview
 
 **HotDevJobs** is a full-featured job portal where:
@@ -62,6 +63,7 @@ Built as a portfolio project, this application demonstrates:
 
 ---
 
+<a id="features"></a>
 # ⭐ Features
 
 ## 👤 Job Seeker Features
@@ -90,6 +92,7 @@ Built as a portfolio project, this application demonstrates:
 
 ---
 
+<a id="architecture"></a>
 # 🏗️ Architecture
 
 This application uses a standard, production-grade **Spring MVC architecture**:
@@ -104,6 +107,7 @@ This application uses a standard, production-grade **Spring MVC architecture**:
 
 ---
 
+<a id="technology-stack"></a>
 # 🛠️ Technology Stack
 
 ### **Backend**
@@ -129,6 +133,7 @@ This application uses a standard, production-grade **Spring MVC architecture**:
 
 ---
 
+<a id="project-structure"></a>
 # 📁 Project Structure
 
 ```
@@ -192,6 +197,7 @@ src/
 
 ---
 
+<a id="screenshots--feature-walkthrough"></a>
 # 📸 Screenshots & Feature Walkthrough
 
 ## 🏠 Home Page  
@@ -234,6 +240,7 @@ src/
 
 ---
 
+<a id="database-schema"></a>
 # 🧩 Database Schema
 
 Key entities:
@@ -249,6 +256,7 @@ Key entities:
 
 ---
 
+<a id="installation--setup"></a>
 # 🧰 Installation & Setup
 
 ### 1. Clone the repository
@@ -267,7 +275,7 @@ FLUSH PRIVILEGES;
 ```
 
 ### 3. Configure properties
-```
+```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/jobportal
 spring.datasource.username=jobportal
 spring.datasource.password=jobportal
@@ -280,6 +288,7 @@ mvn spring-boot:run
 
 ---
 
+<a id="future-enhancements"></a>
 # 🔮 Future Enhancements
 
 - Pagination & advanced filters  
@@ -291,6 +300,7 @@ mvn spring-boot:run
 
 ---
 
+<a id="author"></a>
 # 👨‍💻 Author
 
 **Bogdan Duchnowski**  
