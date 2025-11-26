@@ -27,6 +27,7 @@ import java.util.Optional;
 @RequestMapping("/recruiter-profile")
 public class RecruiterProfileController {
 
+    private static final int PROFILE_PHOTO_DB_MAX = 64;
     private final UsersRepository usesRepository;
     private final RecruiterProfileService recruiterProfileService;
 
@@ -67,6 +68,16 @@ public class RecruiterProfileController {
         String fileName = "";
         if(!Objects.equals(multipartFile.getOriginalFilename(), "")){
             fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+            if (fileName.length() > PROFILE_PHOTO_DB_MAX) {
+                int dot = fileName.lastIndexOf('.');
+                if (dot > 0 && dot < fileName.length() - 1) {
+                    String ext = fileName.substring(dot);
+                    int baseMax = Math.max(1, PROFILE_PHOTO_DB_MAX - ext.length());
+                    fileName = fileName.substring(0, baseMax) + ext;
+                } else {
+                    fileName = fileName.substring(0, PROFILE_PHOTO_DB_MAX);
+                }
+            }
             recruiterProfile.setProfilePhoto(fileName);
         }
         RecruiterProfile savedUser = recruiterProfileService.addNew(recruiterProfile);

@@ -33,6 +33,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/job-seeker-profile")
 public class JobSeekerProfileController {
+    private static final int PROFILE_PHOTO_DB_MAX = 64;
     private final JobSeekerProfileService jobSeekerProfileService;
     private final UsersRepository usersRepository;
     private final SkillsRepository skillsRepository;
@@ -43,6 +44,20 @@ public class JobSeekerProfileController {
         this.jobSeekerProfileService = jobSeekerProfileService;
         this.usersRepository = usersRepository;
         this.skillsRepository = skillsRepository;
+    }
+
+    private String enforceMaxFilename(String filename, int maxLen) {
+        if (filename == null) return null;
+        if (filename.length() <= maxLen) return filename;
+        // preserve extension
+        int dot = filename.lastIndexOf('.');
+        if (dot <= 0 || dot == filename.length() - 1) {
+            return filename.substring(0, maxLen);
+        }
+        String ext = filename.substring(dot); // includes dot
+        int baseMax = Math.max(1, maxLen - ext.length());
+        String base = filename.substring(0, baseMax);
+        return base + ext;
     }
 
     @PostMapping("/addNew")
@@ -113,6 +128,7 @@ public class JobSeekerProfileController {
 
         if (!Objects.equals(image.getOriginalFilename(), "")) {
             imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
+            imageName = enforceMaxFilename(imageName, PROFILE_PHOTO_DB_MAX);
             jobSeekerProfile.setProfilePhoto(imageName);
         }
 
@@ -149,10 +165,17 @@ public class JobSeekerProfileController {
             Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(user.getUserId());
             if (seekerProfile.isPresent()) {
                 jobSeekerProfile = seekerProfile.get();
-                if (jobSeekerProfile.getSkills().isEmpty()) {
-                    skills.add(new Skills());
-                    jobSeekerProfile.setSkills(skills);
+                List<Skills> existing = jobSeekerProfile.getSkills();
+                if (existing == null || existing.isEmpty()) {
+                    existing = new ArrayList<>();
+                    existing.add(new Skills());
+                    jobSeekerProfile.setSkills(existing);
                 }
+                skills = existing; // ensure model gets the actual skills list
+            } else {
+                // new profile: show one empty skill row for convenience
+                skills.add(new Skills());
+                jobSeekerProfile.setSkills(skills);
             }
             model.addAttribute("skills", skills);
             model.addAttribute("profile", jobSeekerProfile);

@@ -82,7 +82,18 @@ public class UsersController {
             return "register";
         }
         usersService.addNew(user);
-        return "redirect:/dashboard";
+        // Redirect based on selected user type: Job Seekers -> login, Recruiters -> dashboard
+        try {
+            int typeId = user.getUserTypeId() != null ? user.getUserTypeId().getUserTypeId() : -1;
+            if (typeId == 1) {
+                return "redirect:/dashboard";
+            } else {
+                return "redirect:/login";
+            }
+        } catch (Exception e) {
+            // Safe fallback to login after registration
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/login")

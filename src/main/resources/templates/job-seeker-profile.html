@@ -251,7 +251,7 @@
                                     File size exceeds 1 MB. Please choose a smaller resume file.
                                 </small>
                                 <a sec:authorize="hasAuthority('Recruiter')"
-                                   th:href="@{|/job-seeker-profile/downloadResume?fileName=${profile.resume}&&userID=${profile.userAccountId}|}">Download
+                                   th:href="@{/job-seeker-profile/downloadResume(fileName=${profile.resume},userID=${profile.userAccountId})}">Download
                                     Resume</a>
                             </div>
                         </div>

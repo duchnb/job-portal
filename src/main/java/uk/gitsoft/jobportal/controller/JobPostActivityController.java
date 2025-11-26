@@ -54,12 +54,12 @@ public class JobPostActivityController {
                              @RequestParam(value = "days30", required = false) boolean days30
     ) {
         model.addAttribute("partTime", Objects.equals(partTime, "Part-Time"));
-        model.addAttribute("fullTime", Objects.equals(partTime, "Full-Time"));
-        model.addAttribute("freelance", Objects.equals(partTime, "Freelance"));
+        model.addAttribute("fullTime", Objects.equals(fullTime, "Full-Time"));
+        model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
 
-        model.addAttribute("remoteOnly", Objects.equals(partTime, "Remote-Only"));
-        model.addAttribute("officeOnly", Objects.equals(partTime, "Office-Only"));
-        model.addAttribute("partialRemote", Objects.equals(partTime, "Partial-Remote"));
+        model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
+        model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
+        model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
 
         model.addAttribute("today", today);
         model.addAttribute("days7", days7);
@@ -71,8 +71,6 @@ public class JobPostActivityController {
         LocalDate searchDate = null;
         List<JobPostActivity> jobPost = null;
         boolean dateSearchFlag = true;
-        boolean remote = true;
-        boolean type = true;
 
         if (days30) {
             searchDate = LocalDate.now().minusDays(30);
@@ -84,25 +82,35 @@ public class JobPostActivityController {
             dateSearchFlag = false;
         }
 
-        if (partTime == null && fullTime == null && freelance == null) {
-            partTime = "Part-Time";
-            fullTime = "Full-Time";
-            freelance = "Freelance";
-            remote = false;
+        // Build selected lists (avoid nulls). If none selected in a group, include all options.
+        List<String> selectedTypes = new java.util.ArrayList<>();
+        if (Objects.equals(partTime, "Part-Time")) selectedTypes.add("Part-Time");
+        if (Objects.equals(fullTime, "Full-Time")) selectedTypes.add("Full-Time");
+        if (Objects.equals(freelance, "Freelance")) selectedTypes.add("Freelance");
+        boolean allTypesSelected = false;
+        if (selectedTypes.isEmpty()) {
+            selectedTypes = java.util.Arrays.asList("Part-Time", "Full-Time", "Freelance");
+            allTypesSelected = true;
         }
 
-        if (officeOnly == null && remoteOnly == null && partialRemote == null) {
-            officeOnly = "Office-Only";
-            remoteOnly = "Remote-Only";
-            partialRemote = "Partial-Remote";
-            type = false;
+        List<String> selectedRemote = new java.util.ArrayList<>();
+        if (Objects.equals(remoteOnly, "Remote-Only")) selectedRemote.add("Remote-Only");
+        if (Objects.equals(officeOnly, "Office-Only")) selectedRemote.add("Office-Only");
+        if (Objects.equals(partialRemote, "Partial-Remote")) selectedRemote.add("Partial-Remote");
+        boolean allRemoteSelected = false;
+        if (selectedRemote.isEmpty()) {
+            selectedRemote = java.util.Arrays.asList("Remote-Only", "Office-Only", "Partial-Remote");
+            allRemoteSelected = true;
         }
 
-        if (!dateSearchFlag && !remote && !type && !StringUtils.hasText(job) && !StringUtils.hasText(location)) {
+        boolean noSearchText = !StringUtils.hasText(job) && !StringUtils.hasText(location);
+        if (!dateSearchFlag && allTypesSelected && allRemoteSelected && noSearchText) {
             jobPost = jobPostActivityService.getAll();
         } else {
-            jobPost = jobPostActivityService.search(job, location, Arrays.asList(partTime, fullTime, freelance),
-                    Arrays.asList(remoteOnly, officeOnly, partialRemote), searchDate);
+            String jobSafe = job == null ? "" : job;
+            String locationSafe = location == null ? "" : location;
+            // Pass type list first, remote list second to match service signature
+            jobPost = jobPostActivityService.search(jobSafe, locationSafe, selectedTypes, selectedRemote, searchDate);
         }
 
         Object currentUserProfile = usersService.getCurrentUserProfile();
